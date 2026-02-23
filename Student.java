@@ -3,6 +3,11 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
 
+enum Grade 
+{//enum = a user-defined data type consisting of a set of named constants
+    A, B, C, D, F
+}
+
 public class Student 
 {
    int id;
@@ -30,20 +35,20 @@ public class Student
 
       if (studentCourse != null) 
         {
-            System.out.println("Course: " + studentCourse.courseCode + " - " + studentCourse.courseName);
-            System.out.println("Results:");
-
             for (int i = 0; i < studentCourse.moduleList.size(); i++) 
             {
-                Module currentModule = studentCourse.moduleList.get(i);
-                int currentMark = marks[i];
-                String grade = currentModule.getLetterGrade(currentMark);
-
-                System.out.println(currentModule.moduleName +" (" + currentModule.moduleCode + ") Mark: " + currentMark + "; Grade: " + grade);
+            Module currentModule = studentCourse.moduleList.get(i);
+            int currentMark = marks[i];
+            
+            // Receive the result as a Grade enum
+            Grade grade = currentModule.LetterGrade(currentMark);
+            
+            System.out.println(currentModule.moduleName +  " | Mark: " + currentMark + "; Grade: " + grade); // Java automatically calls .toString() on enums
             }
-        } else 
+        }
+        else 
         {
-            System.out.println("Not enrolled in a course.");
+            System.out.println("No course enrolled.");
         }
 
       
@@ -109,25 +114,16 @@ class Module
         this.moduleCode = moduleCode;
     }
 
-    public String LetterGrade(int mark) 
+  
+    public Grade LetterGrade(int mark) 
     {
-        if (mark >= 70) 
-        {
-            return "A";
-        } else if (mark >= 60) 
-        {
-            return "B";
-        } else if (mark >= 50) 
-        {
-            return "C";
-        } else if (mark >= 40) 
-        {
-            return "D";
-        } else 
-        {
-            return "F";
-        }
+        if (mark >= 70) return Grade.A;
+        if (mark >= 60) return Grade.B;
+        if (mark >= 50) return Grade.C;
+        if (mark >= 40) return Grade.D;
+        return Grade.F;
     }
+
 
     public void printModuleDetails() 
     {
