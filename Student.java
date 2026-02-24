@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
@@ -61,14 +60,34 @@ public class Student
    
    public static void main(String[] args)
       {
-            Student student1 = new Student(123456, "Anna");//assigns name and id
-            student1.printStudentValues();//calls printStudentValues to display name and id
 
+          Random rand = new Random();//creates a Random object to generate random marks for students
             Course course1 = new Course("C021", "Biomedical Science");
 
-            student1.enrol(course1);//links student with course
-            student1.printStudentValues();//method now prints student and course
-      }
+            ArrayList<Student> studentList = new ArrayList<>(); //creates an ArrayList to hold Student objects; ArrayList is a resizable array that can hold objects of any type (in this case, Student)
+            studentList.add(new Student(101256, "Anna"));
+            studentList.add(new Student(126797, "Bob"));
+            studentList.add(new Student(134890, "Charlie"));
+
+            ArrayList<ModuleMark> allResults = new ArrayList<>();//creates an ArrayList to hold ModuleMark objects
+
+            for (Student s : studentList) 
+            {
+               s.enrol(course1); //enrols each student in the course (links student with course)
+               for (Module m : course1.moduleList) 
+                {
+                  int randomMark = rand.nextInt(101);//generates random mark for each module
+                  allResults.add(new ModuleMark(s, m, randomMark));//creates a new ModuleMark object for each student-module combination and adds it to the allResults list
+                }
+           }
+
+           System.out.println("--- ALL STUDENT RESULTS ---");
+           for (ModuleMark record : allResults) 
+            {
+              record.printResult();
+            }
+
+        }
 }
 
 
@@ -115,9 +134,9 @@ class Module
     }
 
   
-    public Grade LetterGrade(int mark) 
+    public Grade LetterGrade(int mark) //method that takes an integer mark and returns the corresponding Grade enum value based on the specified thresholds
     {
-        if (mark >= 70) return Grade.A;
+        if (mark >= 70) return Grade.A; 
         if (mark >= 60) return Grade.B;
         if (mark >= 50) return Grade.C;
         if (mark >= 40) return Grade.D;
@@ -128,5 +147,25 @@ class Module
     public void printModuleDetails() 
     {
         System.out.println("Module: " + moduleCode + ": " + moduleName);
+    }
+}
+
+class ModuleMark //class to link a student, a module, and a mark together
+{
+    Student student;
+    Module module;
+    int mark;
+
+    public ModuleMark(Student student, Module module, int mark) 
+    {
+        this.student = student; 
+        this.module = module;
+        this.mark = mark;
+    }
+
+    public void printResult() 
+    {
+        Grade g = module.LetterGrade(mark); //calls LetterGrade method of the module to get the grade corresponding to the mark
+        System.out.println("Student: " + student.name + "; Module: " + module.moduleName + "; Mark: " + mark + "; Grade: " + g);
     }
 }
