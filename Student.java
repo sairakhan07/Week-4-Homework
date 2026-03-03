@@ -34,10 +34,10 @@ public class Student
 
       if (studentCourse != null) 
         {
-            for (int i = 0; i < studentCourse.moduleList.size(); i++) 
+            for (int i = 0; i < studentCourse.moduleList.size(); i++) //iterates through the moduleList of the student's course and prints the module name, mark, and grade for each module
             {
             Module currentModule = studentCourse.moduleList.get(i);
-            int currentMark = marks[i];
+            int currentMark = marks[i];//gets the mark for the current module from the marks array
             
             // Receive the result as a Grade enum
             Grade grade = currentModule.LetterGrade(currentMark);
@@ -48,9 +48,7 @@ public class Student
         else 
         {
             System.out.println("No course enrolled.");
-        }
-
-      
+        }     
    }
 
    public void enrol(Course newCourse) //method that allows an object of the class Course to be passed in
@@ -59,7 +57,7 @@ public class Student
    }
    
    public static void main(String[] args)
-      {
+    {
 
           Random rand = new Random();//creates a Random object to generate random marks for students
             Course course1 = new Course("C021", "Biomedical Science");
@@ -69,7 +67,7 @@ public class Student
             studentList.add(new Student(126797, "Bob"));
             studentList.add(new Student(134890, "Charlie"));
 
-            ArrayList<ModuleMark> allResults = new ArrayList<>();//creates an ArrayList to hold ModuleMark objects
+            ArrayList<moduleMark> allResults = new ArrayList<>();//creates an ArrayList to hold moduleMark objects
 
             for (Student s : studentList) 
             {
@@ -77,17 +75,47 @@ public class Student
                for (Module m : course1.moduleList) 
                 {
                   int randomMark = rand.nextInt(101);//generates random mark for each module
-                  allResults.add(new ModuleMark(s, m, randomMark));//creates a new ModuleMark object for each student-module combination and adds it to the allResults list
+                  allResults.add(new moduleMark(s, m, randomMark));//creates a new moduleMark object for each student-module combination and adds it to the allResults list
                 }
            }
 
            System.out.println("--- ALL STUDENT RESULTS ---");
-           for (ModuleMark record : allResults) 
+           for  (moduleMark record : allResults) //iterates through allResults and calls printResult method for each moduleMark object to display the student name, module name, mark, and grade
             {
               record.printResult();
             }
 
+        if(!allResults.isEmpty()) //checks if allResults is not empty before calculating statistics to avoid errors
+        {
+            int sum = 0;//variable to hold the sum of all marks for calculating the mean
+         moduleMark lowestMark = allResults.get(0);//initialises lowestMark and highestMark to the first record in allResults to start comparisons
+         moduleMark highestMark = allResults.get(0);
+        
+         for (moduleMark record : allResults) //iterates through allResults to calculate the sum of marks and find the lowest and highest marks
+         {
+            sum += record.mark;//adds the mark of the current record to the sum variable
+
+            if(record.mark < lowestMark.mark) 
+            {
+                lowestMark = record;//if the mark of the current record is less than the mark of lowestMark, update lowestMark to the current record
+            }
+
+            if(record.mark > highestMark.mark) 
+            {
+                highestMark = record;//if the mark of the current record is greater than the mark of highestMark, update highestMark to the current record
+            }
+         }
+
+         double mean = (double) sum / allResults.size();//calculates the mean by dividing the sum of marks by the number of records in allResults (casts sum to double for accurate division)
+
+         System.out.println("\n--- STATISTICS ---");
+         System.out.println("Mean mark: " + mean);
+         System.out.println("Lowest mark: " + lowestMark.mark);
+         System.out.println("Highest mark: " + highestMark.mark);
+
         }
+
+    }
 }
 
 
@@ -150,13 +178,13 @@ class Module
     }
 }
 
-class ModuleMark //class to link a student, a module, and a mark together
+class  moduleMark //class to link a student, a module, and a mark together
 {
     Student student;
     Module module;
     int mark;
 
-    public ModuleMark(Student student, Module module, int mark) 
+    public moduleMark(Student student, Module module, int mark) 
     {
         this.student = student; 
         this.module = module;
